@@ -9,4 +9,7 @@ otp = {
 }
 
 dofile(MP.."/functions.lua")
-dofile(MP.."/test.lua")
+
+if minetest.get_modpath("mtt") and mtt.enabled then
+    dofile(MP.."/functions.spec.lua")
+end
