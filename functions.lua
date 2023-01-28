@@ -97,7 +97,7 @@ function otp.hmac(key, message)
     local hash_sum_1 = minetest.sha1(first_msg, true)
     assert(#hash_sum_1 == 20)
 
-    -- concat first message to secons
+    -- concat first message to second
     local second_msg = o_key_pad
     for i=1,#hash_sum_1 do
         second_msg = second_msg .. string.char(string.byte(hash_sum_1, i))
