@@ -110,8 +110,22 @@ function otp.hmac(key, message)
     return hmac
 end
 
-function otp.generate_code(key, message)
-    local hmac = otp.hmac(key, message)
+local function left_pad(str, s, len)
+    while #str < len do
+        str = s .. str
+    end
+    return str
+end
+
+function otp.generate_totp(key, unix_time)
+    unix_time = unix_time or os.time()
+
+    local tx = 30
+    local ct = math.floor(unix_time / tx)
+    local counter = otp.write_uint64_be(ct)
+    local valid_seconds = ((ct * tx) + tx) - unix_time
+
+    local hmac = otp.hmac(key, counter)
 
     -- https://www.rfc-editor.org/rfc/rfc4226#section-5.4
     local offset = bitand(string.byte(hmac, #hmac), 0xF)
@@ -120,5 +134,33 @@ function otp.generate_code(key, message)
     value = bitor(value, lshift(string.byte(hmac, offset+3), 8))
     value = bitor(value, lshift(string.byte(hmac, offset+2), 16))
     value = bitor(value, lshift(bitand(string.byte(hmac, offset+1), 0x7F), 24))
-    return value % 10^6
+    local code = value % 10^6
+    local padded_code = left_pad("" .. code, "0", 6)
+
+    return padded_code, valid_seconds
+end
+
+function otp.create_qr_png(data)
+    local pixel_size = 3
+    local height = pixel_size * #data
+    local width = height
+
+    local png_data = {}
+    for _, row in ipairs(data) do
+        assert(#row == #data)
+        for _=1,pixel_size do
+            for _, v in ipairs(row) do
+                for _=1,pixel_size do
+                    if v > 0 then
+                        table.insert(png_data, 0xFF000000)
+                    else
+                        table.insert(png_data, 0xFFFFFFFF)
+                    end
+                end
+            end
+        end
+    end
+    assert(#png_data == width*height)
+
+    return minetest.encode_png(width, height, png_data, 2)
 end

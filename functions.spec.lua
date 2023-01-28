@@ -27,17 +27,34 @@ mtt.register("otp.hmac", function(callback)
     callback()
 end)
 
-mtt.register("otp.generate_code", function(callback)
+mtt.register("otp.generate_totp", function(callback)
     local expected_code = 699847
     local secret_b32 = "N6JGKMEKU2E6HQMLLNMJKBRRGVQ2ZKV7"
     local secret = otp.basexx.from_base32(secret_b32)
     local unix_time = 1640995200
 
-    local tx = 30
-    local ct = math.floor(unix_time / tx)
-    local counter = otp.write_uint64_be(ct)
+    local code, valid_seconds = otp.generate_totp(secret, unix_time)
+    assert(code == ""..expected_code)
+    assert(valid_seconds > 0)
 
-    local code = otp.generate_code(secret, counter)
-    assert(code == expected_code)
+    code, valid_seconds = otp.generate_totp(secret)
+    print("Current code: " .. code .. " valid for " .. valid_seconds .. " seconds")
+    callback()
+end)
+
+mtt.register("otp.create_qr_png", function(callback)
+    local url = "otpauth://totp/abc:myaccount?algorithm=SHA1&digits=6&issuer=abc&period=30&"
+        .. "secret=N6JGKMEKU2E6HQMLLNMJKBRRGVQ2ZKV7"
+
+    local ok, code = otp.qrcode(url)
+    assert(ok)
+    assert(code)
+
+    local png = otp.create_qr_png(code)
+    assert(png)
+
+    local f = io.open(minetest.get_worldpath() .. "/qr.png", "w")
+    f:write(png)
+    f:close()
     callback()
 end)
