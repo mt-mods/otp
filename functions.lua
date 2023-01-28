@@ -164,3 +164,12 @@ function otp.create_qr_png(data)
 
     return minetest.encode_png(width, height, png_data, 2)
 end
+
+function otp.generate_secret()
+    local buf = minetest.sha1("" .. math.random(10000), true)
+    local s = ""
+    for i=1,20 do
+        s = s .. string.char(string.byte(buf, i))
+    end
+    return s
+end
