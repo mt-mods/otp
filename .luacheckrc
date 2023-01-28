@@ -15,3 +15,7 @@ read_globals = {
 	-- testing
 	"mtt"
 }
+
+files["qrencode.lua"] = {
+	ignore = {"631"}
+}
