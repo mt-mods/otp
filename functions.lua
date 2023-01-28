@@ -141,22 +141,17 @@ function otp.generate_totp(key, unix_time)
 end
 
 function otp.create_qr_png(data)
-    local pixel_size = 3
-    local height = pixel_size * #data
+    local height = #data
     local width = height
 
     local png_data = {}
     for _, row in ipairs(data) do
         assert(#row == #data)
-        for _=1,pixel_size do
-            for _, v in ipairs(row) do
-                for _=1,pixel_size do
-                    if v > 0 then
-                        table.insert(png_data, 0xFF000000)
-                    else
-                        table.insert(png_data, 0xFFFFFFFF)
-                    end
-                end
+        for _, v in ipairs(row) do
+            if v > 0 then
+                table.insert(png_data, 0xFF000000)
+            else
+                table.insert(png_data, 0xFFFFFFFF)
             end
         end
     end
