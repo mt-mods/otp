@@ -1,22 +1,20 @@
-local FORMNAME = "otp-enable"
+local FORMNAME = "otp-onboard"
 
 minetest.register_chatcommand("otp_disable", {
-    privs = { otp_enabled = true },
+    description = "Disable the otp verification",
+    privs = { otp_enabled = true, interact = true },
     func = function(name)
         -- clear priv
         local privs = minetest.get_player_privs(name)
-        privs.otp_enabled = true
+        privs.otp_enabled = nil
         minetest.set_player_privs(name, privs)
         return true, "OTP login disabled"
     end
 })
 
 minetest.register_chatcommand("otp_enable", {
+    description = "Enable the otp verification",
     func = function(name)
-        if name == "singleplayer" then
-            return false, "OTP not available in singleplayer"
-        end
-
         -- issuer name
         local issuer = "Minetest"
         if minetest.settings:get("server_name") ~= "" then
@@ -38,9 +36,11 @@ minetest.register_chatcommand("otp_enable", {
         end
 
         local png = otp.create_qr_png(code)
-        local formspec = "size[10,10]" ..
-            "image[1,0.6;5,5;^[png:" .. minetest.encode_base64(png) .. "]" ..
-            "field[1,9;5,1;code;Code;]"
+        local formspec = "size[9,10]" ..
+            "image[1.5,0.6;7,7;^[png:" .. minetest.encode_base64(png) .. "]" ..
+            "label[1,7;Use the above QR code in your OTP-App to obtain a verification code]" ..
+            "field[1,9;4,1;code;Code;]" ..
+            "button_exit[5,8.7;3,1;submit;Verify]"
 
         minetest.show_formspec(name, FORMNAME, formspec)
     end

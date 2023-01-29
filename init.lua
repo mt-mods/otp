@@ -13,7 +13,7 @@ otp = {
 
 dofile(MP.."/functions.lua")
 dofile(MP.."/onboard.lua")
-dofile(MP.."/auth.lua")
+dofile(MP.."/join.lua")
 dofile(MP.."/privs.lua")
 
 if minetest.get_modpath("mtt") and mtt.enabled then
