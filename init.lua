@@ -1,5 +1,8 @@
 local MP = minetest.get_modpath("otp")
 
+-- sanity checks
+assert(type(minetest.encode_png) == "function")
+
 otp = {
     -- mod storage
     storage = minetest.get_mod_storage(),
