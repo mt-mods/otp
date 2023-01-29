@@ -30,14 +30,13 @@ end)
 mtt.register("otp.generate_totp", function(callback)
     local expected_code = 699847
     local secret_b32 = "N6JGKMEKU2E6HQMLLNMJKBRRGVQ2ZKV7"
-    local secret = otp.basexx.from_base32(secret_b32)
     local unix_time = 1640995200
 
-    local code, valid_seconds = otp.generate_totp(secret, unix_time)
+    local code, valid_seconds = otp.generate_totp(secret_b32, unix_time)
     assert(code == ""..expected_code)
     assert(valid_seconds > 0)
 
-    code, valid_seconds = otp.generate_totp(secret)
+    code, valid_seconds = otp.generate_totp(secret_b32)
     print("Current code: " .. code .. " valid for " .. valid_seconds .. " seconds")
     callback()
 end)

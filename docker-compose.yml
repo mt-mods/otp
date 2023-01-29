@@ -8,8 +8,15 @@ services:
     - "./:/root/.minetest/worlds/world/worldmods/otp/"
     - "./test/minetest.conf:/minetest.conf"
     - "world:/root/.minetest/worlds/world"
+
+ minetest:
+  image: registry.gitlab.com/minetest/minetest/server:5.6.1
+  user: root
   ports:
     - "30000:30000/udp"
+  volumes:
+    - "./:/root/.minetest/worlds/world/worldmods/otp/"
+    - "world:/root/.minetest/worlds/world"
 
 volumes:
   world: {}

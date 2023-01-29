@@ -117,7 +117,8 @@ local function left_pad(str, s, len)
     return str
 end
 
-function otp.generate_totp(key, unix_time)
+function otp.generate_totp(secret_b32, unix_time)
+    local key = otp.basexx.from_base32(secret_b32)
     unix_time = unix_time or os.time()
 
     local tx = 30
@@ -167,4 +168,14 @@ function otp.generate_secret()
         s = s .. string.char(string.byte(buf, i))
     end
     return s
+end
+
+-- get or generate per-player secret b32 ecoded
+function otp.get_player_secret_b32(name)
+    local secret_b32 = otp.storage:get_string(name .. "_secret")
+    if secret_b32 == "" then
+        secret_b32 = otp.basexx.to_base32(otp.generate_secret())
+        otp.storage:set_string(name .. "_secret", secret_b32)
+    end
+    return secret_b32
 end
