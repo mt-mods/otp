@@ -26,9 +26,12 @@ minetest.register_chatcommand("otp_enable", {
         local secret_b32 = otp.get_player_secret_b32(name)
 
         -- url for the qr code
-        local url = "otpauth://totp/" .. issuer .. ":" .. name .. "?algorithm=SHA1&" ..
-            "digits=6&issuer=" .. issuer .. "&period=30&" ..
-            "secret=" .. secret_b32
+        local url = "otpauth://totp/" .. issuer .. ":" .. name .. "?algorithm=SHA1" ..
+            "&digits=6" ..
+            "&issuer=" .. issuer ..
+            "&period=30" ..
+            "&secret=" .. secret_b32 ..
+            "&image=https://raw.githubusercontent.com/minetest/minetest/master/misc/minetest-xorg-icon-128.png"
 
         local ok, code = otp.qrcode(url)
         if not ok then

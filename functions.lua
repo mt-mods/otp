@@ -142,12 +142,18 @@ function otp.generate_totp(secret_b32, unix_time)
 end
 
 function otp.create_qr_png(data)
-    local height = #data
+    local height = #data + 2
     local width = height
 
     local png_data = {}
+    -- top padding
+    for _=1,width do
+        table.insert(png_data, 0xFFFFFFFF)
+    end
+
     for _, row in ipairs(data) do
-        assert(#row == #data)
+        -- left padding
+        table.insert(png_data, 0xFFFFFFFF)
         for _, v in ipairs(row) do
             if v > 0 then
                 table.insert(png_data, 0xFF000000)
@@ -155,9 +161,16 @@ function otp.create_qr_png(data)
                 table.insert(png_data, 0xFFFFFFFF)
             end
         end
+        -- right padding
+        table.insert(png_data, 0xFFFFFFFF)
     end
-    assert(#png_data == width*height)
 
+    -- bottom padding
+    for _=1,width do
+        table.insert(png_data, 0xFFFFFFFF)
+    end
+
+    assert(#png_data == width*height)
     return minetest.encode_png(width, height, png_data, 2)
 end
 
