@@ -9,9 +9,10 @@ Lets security-aware players use the `/otp_enable` command to protect their accou
 
 Players that have the OTP enabled have to enter a verification code upon joining the game.
 
-# OTP Authenticator app
+# OTP Authenticator apps
 
 * https://freeotp.github.io/
+* https://github.com/helloworld1/FreeOTPPlus
 
 # Screenshots
 
