@@ -192,3 +192,11 @@ function otp.get_player_secret_b32(name)
     end
     return secret_b32
 end
+
+-- returns true if the player is otp enabled _and_ set up properly
+function otp.is_player_enabled(name)
+    local has_secret = otp.storage:get_string(name .. "_secret") ~= ""
+    local has_priv = minetest.check_player_privs(name, "otp_enabled")
+
+    return has_secret and has_priv
+end

@@ -65,7 +65,7 @@ end
 -- Code formspec on join for otp enabled players
 minetest.register_on_joinplayer(function(player)
     local playername = player:get_player_name()
-    if minetest.check_player_privs(playername, "otp_enabled") then
+    if otp.is_player_enabled(playername) then
         minetest.log("action", "[otp] session start for player: '" .. playername .. "'")
 
         -- start otp session time
