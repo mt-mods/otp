@@ -7,23 +7,56 @@ local otp_time = 300
 local otp_sessions = {}
 
 -- privs to revoke until the verification code is validated
-local temp_revoke_privs = {"interact", "shout", "privs", "basic_privs", "server", "ban", "kick"}
+local temp_revoke_privs = {
+    -- builtin
+    "interact",
+    "shout",
+    "privs",
+    "basic_privs",
+    "server",
+    "ban",
+    "kick",
+    "settime",
+    "password",
+    "protection_bypass",
+    -- we
+    "worldedit",
+    -- areas
+    "areas"
+}
 
+-- moves all "temp_revoke_privs" to mod-storage
 local function revoke_privs(playername)
     local privs = minetest.get_player_privs(playername)
     if otp.storage:get_string(playername .. "_privs") == "" then
-        otp.storage:set_string(playername .. "_privs", minetest.serialize(privs))
-        for _, priv in ipairs(temp_revoke_privs) do
-            privs[priv] = nil
-            minetest.set_player_privs(playername, privs)
+        local moved_privs = {}
+
+        for _, priv_name in ipairs(temp_revoke_privs) do
+            if privs[priv_name] then
+                privs[priv_name] = nil
+                moved_privs[priv_name] = true
+            end
         end
+
+        minetest.log("action", "[otp] revoking privs of '" .. playername .. "' list: " .. dump(moved_privs))
+        minetest.set_player_privs(playername, privs)
+        otp.storage:set_string(playername .. "_privs", minetest.serialize(moved_privs))
     end
 end
 
+-- moves all privs from mod-storage into the live privs
 local function regrant_privs(playername)
     local stored_priv_str = otp.storage:get_string(playername .. "_privs")
     if stored_priv_str ~= "" then
-        local privs = minetest.deserialize(stored_priv_str)
+        local privs = minetest.get_player_privs(playername)
+        local stored_privs = minetest.deserialize(stored_priv_str)
+
+        -- merge stored privs into existing table
+        for priv_name in pairs(stored_privs) do
+            privs[priv_name] = true
+        end
+
+        minetest.log("action", "[otp] regranting privs of '" .. playername .. "' list: " .. dump(stored_privs))
         minetest.set_player_privs(playername, privs)
         otp.storage:set_string(playername .. "_privs", "")
     end
@@ -33,6 +66,8 @@ end
 minetest.register_on_joinplayer(function(player)
     local playername = player:get_player_name()
     if minetest.check_player_privs(playername, "otp_enabled") then
+        minetest.log("action", "[otp] session start for player: '" .. playername .. "'")
+
         -- start otp session time
         otp_sessions[player:get_player_name()] = os.time()
 
