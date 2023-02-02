@@ -18,6 +18,7 @@ dofile(MP.."/functions.lua")
 dofile(MP.."/onboard.lua")
 dofile(MP.."/join.lua")
 dofile(MP.."/privs.lua")
+dofile(MP.."/priv_revoke.lua")
 
 if minetest.get_modpath("mtt") and mtt.enabled then
     dofile(MP.."/functions.spec.lua")

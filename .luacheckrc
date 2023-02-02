@@ -1,5 +1,8 @@
 globals = {
-	"otp"
+	"otp",
+	"minetest" = {
+		"registered_privileges"
+	}
 }
 
 read_globals = {

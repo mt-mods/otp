@@ -22,6 +22,21 @@ OTP verification form
 OTP Setup form
 ![](./screenshot2.png)
 
+# Temporary privilege revocation
+
+All of the privileges get revoked when logging in with the otp enabled (until the proper code is entered).
+Some exceptions:
+* `fly` (otherwise the player would literally fall from the sky)
+* `noclip`
+
+To disable revokation on custom privs the field `otp_keep` can be set to true on the definition:
+```lua
+minetest.register_privilege("my_super_important_priv", {
+    description = "something something",
+    otp_keep = true
+})
+```
+
 # Links / References
 
 * https://en.wikipedia.org/wiki/Time-based_one-time_password
