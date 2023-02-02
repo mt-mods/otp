@@ -16,12 +16,18 @@ minetest.register_chatcommand("otp_enable", {
     description = "Enable the otp verification",
     func = function(name)
         -- issuer name
-        local issuer = "Minetest"
-        if minetest.settings:get("server_name") ~= "" then
-            issuer = minetest.settings:get("server_name")
-        elseif minetest.settings:get("server_address") ~= "" then
-            issuer = minetest.settings:get("server_address")
+        local issuer = minetest.settings:get("otp.issuer") or "Minetest"
+        local server_name = minetest.settings:get("server_name")
+        local server_address = minetest.settings:get("server_address")
+        if server_name and server_name ~= "" then
+            issuer = server_name
+        elseif server_address and server_address ~= "" then
+            issuer = server_address
         end
+
+        -- authenticator image
+        local image = minetest.settings:get("otp.authenticator_image") or
+            "https://raw.githubusercontent.com/minetest/minetest/master/misc/minetest-xorg-icon-128.png"
 
         local secret_b32 = otp.get_player_secret_b32(name)
 
@@ -31,7 +37,7 @@ minetest.register_chatcommand("otp_enable", {
             "&issuer=" .. issuer ..
             "&period=30" ..
             "&secret=" .. secret_b32 ..
-            "&image=https://raw.githubusercontent.com/minetest/minetest/master/misc/minetest-xorg-icon-128.png"
+            "&image=" .. image
 
         local ok, code = otp.qrcode(url)
         if not ok then

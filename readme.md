@@ -37,6 +37,11 @@ minetest.register_privilege("my_super_important_priv", {
 })
 ```
 
+# Settings
+
+* `otp.authenticator_image` The image to use in the QR code for the otp app (defaults to "https://raw.githubusercontent.com/minetest/minetest/master/misc/minetest-xorg-icon-128.png")
+* `otp.issuer` The issuer name, defaults to server name, address or just "Minetest"
+
 # Links / References
 
 * https://en.wikipedia.org/wiki/Time-based_one-time_password
