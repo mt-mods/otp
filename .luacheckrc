@@ -1,8 +1,6 @@
 globals = {
 	"otp",
-	"minetest" = {
-		"registered_privileges"
-	}
+	"minetest"
 }
 
 read_globals = {
@@ -11,7 +9,7 @@ read_globals = {
 	table = {fields = {"copy", "getn"}},
 
 	-- Minetest
-	"minetest", "vector", "ItemStack",
+	"vector", "ItemStack",
 	"dump", "dump2",
 	"VoxelArea",
 
