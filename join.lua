@@ -55,8 +55,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
     local playername = player:get_player_name()
     local secret_b32 = otp.get_player_secret_b32(playername)
-    local expected_code = otp.generate_totp(secret_b32)
-    if expected_code == fields.code then
+    if otp.check_code(secret_b32, fields.code) then
         minetest.chat_send_player(playername, "OTP Code validation succeeded")
         otp_sessions[playername] = nil
         otp.regrant_privs(playername)

@@ -63,8 +63,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     if fields.code then
         local playername = player:get_player_name()
         local secret_b32 = otp.get_player_secret_b32(playername)
-        local expected_code = otp.generate_totp(secret_b32)
-        if expected_code == fields.code then
+        if otp.check_code(secret_b32, fields.code) then
             -- set priv
             local privs = minetest.get_player_privs(playername)
             privs.otp_enabled = true

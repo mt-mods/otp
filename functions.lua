@@ -200,3 +200,14 @@ function otp.is_player_enabled(name)
 
     return has_secret and has_priv
 end
+
+function otp.check_code(secret_b32, code, time)
+    time = time or os.time()
+    for _, t_offset in ipairs({0, -30, 30}) do
+        local expected_code = otp.generate_totp(secret_b32, time + t_offset)
+        if expected_code == code then
+            return true
+        end
+    end
+    return false
+end

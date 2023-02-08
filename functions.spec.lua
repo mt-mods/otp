@@ -28,16 +28,31 @@ mtt.register("otp.hmac", function(callback)
 end)
 
 mtt.register("otp.generate_totp", function(callback)
-    local expected_code = 699847
+    local expected_code = "699847"
     local secret_b32 = "N6JGKMEKU2E6HQMLLNMJKBRRGVQ2ZKV7"
     local unix_time = 1640995200
 
     local code, valid_seconds = otp.generate_totp(secret_b32, unix_time)
-    assert(code == ""..expected_code)
+    assert(code == expected_code)
     assert(valid_seconds > 0)
 
     code, valid_seconds = otp.generate_totp(secret_b32)
     print("Current code: " .. code .. " valid for " .. valid_seconds .. " seconds")
+    callback()
+end)
+
+mtt.register("otp.check_code", function(callback)
+    local expected_code = "699847"
+    local secret_b32 = "N6JGKMEKU2E6HQMLLNMJKBRRGVQ2ZKV7"
+    local unix_time = 1640995200
+
+    assert(otp.check_code(secret_b32, expected_code, unix_time))
+    assert(otp.check_code(secret_b32, expected_code, unix_time+30))
+    assert(otp.check_code(secret_b32, expected_code, unix_time-30))
+    assert(not otp.check_code(secret_b32, expected_code, unix_time-60))
+    assert(not otp.check_code(secret_b32, expected_code, unix_time+60))
+    assert(not otp.check_code(secret_b32, expected_code))
+
     callback()
 end)
 
