@@ -17,4 +17,4 @@ jobs:
         fetch-depth: 0
         submodules: recursive
     - name: test
-      run: docker-compose up --exit-code-from test test
+      run: docker compose up --exit-code-from test test
